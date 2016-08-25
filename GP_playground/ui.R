@@ -59,16 +59,26 @@ shinyUI(navbarPage("Gaussian Process Playground", theme = "spacelab.css",id='nav
                  column(6,plotOutput("kernel"))
                )),
       tabPanel("mean and confidence intervals",
-               column(8,offset=2,plotOutput("model", click="plotModel_click")),
-               column(2,br(),br(),br(),p("Click on plot to"),radioButtons("addPts2", label = "",selected = TRUE,
-                                                    choices = list("add points" = TRUE, "remove points" = FALSE)
-               ))
+               column(8,offset=1,plotOutput("model", click="plotModel_click")),
+               column(2,br(),br(),br(),
+                      p("Click on plot to"),
+                      radioButtons("addPts2", label = "",selected = TRUE,
+                                   choices = list("add points" = TRUE, "remove points" = FALSE)),
+                      br(),p("nb grid points:"),
+                      numericInput("n_grid2", "", min = 10, max = 500, value = 100, step = 100)
+               )
       ),
       tabPanel("samples",
-               column(8,offset=2,plotOutput("samples", click="plotSample_click")),
-               column(2,br(),br(),br(),p("Click on plot to"),radioButtons("addPts", label = "",selected = TRUE,
+               column(8,offset=1,plotOutput("samples", click="plotSample_click")),
+               column(2,br(),br(),br(),
+                      p("Click on plot to"),
+                      radioButtons("addPts", label = "",selected = TRUE,
                                      choices = list("add points" = TRUE, "remove points" = FALSE)
-                                     )
+                                     ),
+                      br(),p("nb grid points:"),
+                      numericInput("n_grid", "", min = 10, max = 500, value = 100, step = 100),
+                      br(),p("nb samples:"),
+                      numericInput("n_sample", "", min = 1, max = 1000, value = 100, step = 10)
                )
       )
     )
@@ -77,11 +87,11 @@ shinyUI(navbarPage("Gaussian Process Playground", theme = "spacelab.css",id='nav
 
   hr(),
   
-  fluidRow(
-    column(4,p("plotting parameters")),
-    column(4,numericInput("n_grid", "nb grid points", min = 10, max = 500, value = 101, step = 1)),
-    column(4,conditionalPanel(condition = "input.plots == 'samples'",numericInput("n_sample", "nb samples", min = 1, max = 1000, value = 100, step = 1)))
-  ),
+#   fluidRow(
+#     column(4,p("plotting parameters")),
+#     column(4,numericInput("n_grid", "nb grid points", min = 10, max = 500, value = 101, step = 1)),
+#     column(4,conditionalPanel(condition = "input.plots == 'samples'",numericInput("n_sample", "nb samples", min = 1, max = 1000, value = 100, step = 1)))
+#   ),
   br(),br(),br()
   # verbatimTextOutput("info")
 

@@ -1,4 +1,5 @@
 library(shiny)
+source('functions.R')
 
 # Define server logic required to plot various variables against mpg
 shinyServer(function(input, output) {
@@ -36,7 +37,6 @@ shinyServer(function(input, output) {
   
   
   output$mean <- renderPlot({
-    source('functions.R')
     d <- c(0,1)        # domaine
     n_grid <- input$n_grid
     x <- seq(d[1],d[2],length.out=n_grid) # prediction grid
@@ -57,7 +57,6 @@ shinyServer(function(input, output) {
   })
 
   output$kernel <- renderPlot({
-    source('functions.R')
     d <- c(0,1)        # domaine
     n_grid <- input$n_grid
 
@@ -78,9 +77,8 @@ shinyServer(function(input, output) {
   })
   
   output$model <- renderPlot({
-    source('functions.R')
     d <- c(0,1)        # domaine
-    n_grid <- input$n_grid
+    n_grid <- input$n_grid2
     x <- matrix(seq(d[1],d[2],length.out=n_grid)) # prediction grid
     
     b0 <- b1 <- b2 <- 0
@@ -118,7 +116,6 @@ shinyServer(function(input, output) {
   })
   
   output$samples <- renderPlot({
-    source('functions.R')
     d <- c(0,1)        # domaine
     n_grid <- input$n_grid
     n_sample <- input$n_sample
