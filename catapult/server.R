@@ -1,19 +1,14 @@
 library(shiny)
+source('catapultSettings.R')
+source('catapultFunctions.R')
 
 # Define server logic required to plot various variables against mpg
 shinyServer(function(input, output) {
-  # trajectory
-  output$trajectoryPlot <- renderPlot({
-    source('catapultSettings.R')
-    source('catapultFunctions.R')
-    Fact <- c(input$Fact1,input$Fact2,input$Fact3,input$Fact4)
-    #Sys.sleep(15)
-    runExperiment(Fact,plot='new')
-  })
-  # catapult
+  
+  # plot catapult settings
   output$catapultPlot <- renderPlot({
-    source('catapultSettings.R')
-    source('catapultFunctions.R')
+    # source('catapultSettings.R')
+    # source('catapultFunctions.R')
     Fact <- c(input$Fact1,input$Fact2,input$Fact3,input$Fact4)
     cat <- computeCatapult(Fact,0)
     par(mar=c(0,0,0,0),mfrow=c(1,2))
@@ -25,7 +20,21 @@ shinyServer(function(input, output) {
     plotCatapult(cat,lightBlue,darkBlue)
     par(mfrow=c(1,1))
   })
+  
+  # Action
+  observeEvent(input$action, {
+    output$trajectoryPlot <- renderPlot({
+      Fact <- c(input$Fact1,input$Fact2,input$Fact3,input$Fact4)
+      runExperiment(Fact,input$wind,plot='new')
+    })
+  })
+  
+  output$trajectoryPlot <- renderPlot({
+    Fact <- c(input$Fact1,input$Fact2,input$Fact3,input$Fact4)
+    runExperiment(Fact,input$wind,plot='new')
+  })
+  
   output$text1 <- renderText({ 
-    c(input$Fact1,input$Fact2,input$Fact3,input$Fact4)
+    c(input$Fact1,input$Fact2,input$Fact3,input$Fact4,input$wind)
   })
 })

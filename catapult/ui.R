@@ -25,12 +25,14 @@ shinyUI(pageWithSidebar(
                   max = 1, 
                   value = .5,
                   step = 0.01),
-      sliderInput("Fact4", 
+    sliderInput("Fact4", 
                   "x4: spring binding 2", 
                   min = 0,
                   max = 1, 
                   value = .5,
-                  step = 0.01)
+                  step = 0.01),
+    radioButtons("wind", "Wind", list(None=0,Breesy=1,Windy=5), selected = 1),
+    actionButton("action", "Action!", icon = NULL)
     ),
   
   mainPanel(

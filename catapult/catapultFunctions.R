@@ -75,17 +75,17 @@ departureSpeed <- function(Fact,theta){
   return(speed)
 }
 
-elementaryMove <- function(x,v,dt){
+elementaryMove <- function(x,v,wind,dt){
   x <- x + v*dt
   #   if(x[2]<=0){       # Should be uncommented for bouncing
   #     x[2] <- -x[2]
   #     v[2] <- -v[2]
   #   }
-  v <- v + c(0,-9.81)*dt - ballFriction * v * dt
+  v <- v + c(0,-9.81)*dt - ballFriction * (v+c(-wind,0)) * dt
   return(c(x,v))
 }
 
-trajectory <- function(Fact){
+trajectory <- function(Fact,wind){
   #Fact <- Fact[c(3,1,4,2)]
   # Flight initial conditions
   thetaMax <- maxAngle(Fact)
@@ -93,7 +93,7 @@ trajectory <- function(Fact){
   v <- departureSpeed(Fact,thetaMax)
   # sum elementary moves
   while(x[2]>0){
-    em <- elementaryMove(x,v,dt)
+    em <- elementaryMove(x,v,wind,dt)
     x <- em[1:2]
     v <- em[3:4]
     X <- rbind(X,x)
@@ -101,9 +101,10 @@ trajectory <- function(Fact){
   return(X)
 }
 
-runExperiment <- function(Fact,plot='new',xlim=c(-20,200),ylim=c(-5,80),colBody=lightBlue,colBall=darkBlue,plotOutputValues=FALSE){
+runExperiment <- function(Fact,windFactor,plot='new',xlim=c(-20,200),ylim=c(-5,80),colBody=lightBlue,colBall=darkBlue,plotOutputValues=FALSE){
   #Fact <- Fact[c(3,1,4,2)]
-  X <- trajectory(Fact)
+  wind <- rnorm(1,0,as.numeric(windFactor))
+  X <- trajectory(Fact,wind)
   output <- apply(X, 2, max) 
   savpar <- par(no.readonly = TRUE)
   if(plot=='new'){ # create new plot window
@@ -112,17 +113,25 @@ runExperiment <- function(Fact,plot='new',xlim=c(-20,200),ylim=c(-5,80),colBody=
     lines(c(0,0),ylim)
     #title(paste('Fact = [ ',Fact[1],paste(', ',Fact[-1],collapse=''),' ]',sep=''),line=-2,col.main=colBody) #,collapse=' '))
   }
+  
   # Plot catapult
   thetaMax <- maxAngle(Fact)
   catapult <- computeCatapult(Fact,thetaMax)
   plotCatapult(catapult,colBody,colBall)
+  
   # Plot ball
   symbols(X[-1,1],X[-1,2], circles=rep(widthBall,nrow(X)-1), inches=F, add=T,bg=colBall)
+  
   # plot Output Values
   lines(xlim,rep(output[2],2),lty=2)
   text(xlim[1],output[2],paste(round(output[2],1)),cex=1.2,pos=2,col=colBody)
   lines(rep(output[1],2),ylim,lty=2)
   text(output[1],ylim[1],paste(round(output[1],1)),cex=1.2,pos=1,col=colBody)
+  
+  # display wind
+  rect(min(xlim[2]-40,xlim[2]-20+3*wind), ylim[2]-18, xlim[2], ylim[2], col = "white", border = "white")
+  text(xlim[2]-20,ylim[2]-5,paste0("wind: ",round(wind,2)),cex=1.2,col=colBall)
+  if(abs(wind) > .2) arrows(xlim[2]-20-3*wind, ylim[2]-13, xlim[2]-20+3*wind , ylim[2]-13, length = 0.05, lwd=3,col=colBall)
   par(savpar)
   return(output)
 }
