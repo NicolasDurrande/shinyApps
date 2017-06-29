@@ -1,6 +1,8 @@
 # shinyApps
 
-You can access these apps directly on this [webpage](http://shiny.emse.fr:3838).
+You can access these apps directly on the web
+* [catapult](https://durrande.shinyapps.io/catapult/)
+* [GP playground](https://durrande.shinyapps.io/gp_playground/)
 
 If you want to run them locally, you'll need *R* with the *shiny* package.
 
